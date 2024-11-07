@@ -1,6 +1,5 @@
 <!-- 
-try this on URL..
-?frequency=528&timestamp=1700000000000
+ !! params t (timestamp) and f (frequency)
 
 -->
 
@@ -10,22 +9,30 @@ try this on URL..
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantavibras</title>
+    
+    <!-- Font Preconnect and Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    
     <style>
         /* Colors */
         :root {
             --accent: #b8fe1e;
-            --dark: rgb(79, 79, 3);
-            --white: rgb(240, 244, 237);
-            --black: rgb(3, 34, 1);
+            --dark: #1a1a1a;
+            --black: #030201;
             --red: #a71d31;
+            --glow: rgba(184, 254, 30, 0.6);
+            --background-gradient: linear-gradient(135deg, #1a1a1a, #030201 90%);
         }
-        
+
+        /* Body and Background */
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: var(--black);
-            color: var(--white);
+            font-family: 'Kode Mono', monospace;
+            background: var(--background-gradient);
+            color: var(--accent);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -35,23 +42,40 @@ try this on URL..
             text-align: center;
         }
 
+        /* Logo Pulse */
+        #logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+            animation: logoPulse 2s infinite;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         h1 {
             color: var(--accent);
+            font-size: 2.5em;
+            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
         }
 
         #welcomeMessage {
             font-size: 1.5em;
             margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 5px var(--glow);
         }
 
-        /* Sound Visual */
+        /* Full-screen visualization */
         #visualization {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,18 +84,32 @@ try this on URL..
             pointer-events: none;
         }
 
-        #circle {
-            width: 100px;
-            height: 100px;
+        /* Glowing Circles */
+        .circle {
+            position: absolute;
             border-radius: 50%;
-            background-color: var(--accent);
-            animation: pulse 1s infinite;
+            box-shadow: 0 0 20px var(--glow), 0 0 50px var(--glow), 0 0 100px var(--accent);
+            opacity: 0.7;
+            animation: pulse infinite ease-in-out;
         }
 
+        /* Circle Animation */
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.4;
+            }
         }
+
+        /* Dynamic sizes for circles */
+        .circle1 { width: 50vmin; height: 50vmin; background: radial-gradient(circle, rgba(184, 254, 30, 0.5), transparent); }
+        .circle2 { width: 70vmin; height: 70vmin; background: radial-gradient(circle, rgba(167, 29, 49, 0.4), transparent); }
+        .circle3 { width: 90vmin; height: 90vmin; background: radial-gradient(circle, rgba(240, 244, 237, 0.3), transparent); }
+        .circle4 { width: 110vmin; height: 110vmin; background: radial-gradient(circle, rgba(79, 79, 3, 0.2), transparent); }
 
         /* Exit Button */
         #exitButton {
@@ -86,6 +124,8 @@ try this on URL..
             border-radius: 5px;
             opacity: 0.6;
             cursor: pointer;
+            box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+            transition: background-color 0.3s, opacity 0.3s;
         }
 
         #exitButton:hover {
@@ -94,38 +134,62 @@ try this on URL..
         }
 
         /* Hidden by default */
-        #exitButton.hidden, #playButton.hidden {
+        #exitButton.hidden, #playButton.hidden, #homeButton.hidden, #logo.hidden {
             display: none;
         }
 
-        /* Main button */
-        #playButton {
+        /* Main and Home buttons */
+        #playButton, #homeButton {
             padding: 10px 20px;
             font-size: 18px;
             background-color: var(--accent);
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+            color: var(--black);
+            transition: background-color 0.3s;
+        }
+
+        /* Home Button styling */
+        #homeButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        #homeButton:hover {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <h1>Welcome to Plantavibras</h1>
-    <div id="welcomeMessage">Calculating day...</div>
-    <button id="playButton">Activate Sound and Visual</button>
+    <!-- Logo -->
+    <img src="logo.png" id="logo" alt="Plantavibras Logo">
 
-    <!-- Full-screen visualization -->
+    <!-- Title and Message -->
+    <h1>Plantavibras</h1>
+    <div id="welcomeMessage">Calculating day...</div>
+    <button id="playButton">START</button>
+    <button id="homeButton">HOME</button>
+
+    <!-- Full-screen visualization with glowing concentric circles -->
     <div id="visualization">
         <button id="exitButton" class="hidden">Exit</button>
-        <div id="circle"></div>
+        <div class="circle circle1"></div>
+        <div class="circle circle2"></div>
+        <div class="circle circle3"></div>
+        <div class="circle circle4"></div>
     </div>
 
     <script>
         // Retrieve URL parameters or use defaults
         const urlParams = new URLSearchParams(window.location.search);
-        const frequency = parseFloat(urlParams.get('frequency')) || 440;
-        const timestamp = parseInt(urlParams.get('timestamp')) || Date.now();
+        const frequency = parseFloat(urlParams.get('f')) || 440;
+        const timestamp = parseInt(urlParams.get('t')) || Date.now();
 
         // Calculate the "day" relative to the timestamp
         function calculateDay() {
@@ -136,12 +200,13 @@ try this on URL..
 
         // Display day
         const day = calculateDay();
-        document.getElementById('welcomeMessage').textContent = `Today is Day ${day}`;
+        document.getElementById('welcomeMessage').textContent = `Day ${day}`;
 
-        // Pulse effect and color based on frequency
-        const circle = document.getElementById('circle');
-        circle.style.animationDuration = `${1 / (frequency / 100)}s`;
-        circle.style.backgroundColor = frequency < 500 ? 'rgb(184, 254, 30)' : 'rgb(167, 29, 49)';
+        // Pulse speed adjustment based on frequency
+        const pulseDuration = `${Math.max(0.5, 2 - frequency / 500)}s`;
+        document.querySelectorAll('.circle').forEach((circle) => {
+            circle.style.animationDuration = pulseDuration;
+        });
 
         // Sound generation
         let audioContext, oscillator;
@@ -170,6 +235,8 @@ try this on URL..
             document.getElementById('visualization').style.pointerEvents = 'auto';
             document.getElementById('playButton').classList.add('hidden');
             document.getElementById('exitButton').classList.remove('hidden');
+            document.getElementById('homeButton').classList.add('hidden');
+            document.getElementById('logo').classList.add('hidden');
         });
 
         // Exit button to stop sound and return to home screen
@@ -178,6 +245,8 @@ try this on URL..
             document.getElementById('visualization').style.opacity = '0';
             document.getElementById('visualization').style.pointerEvents = 'none';
             document.getElementById('playButton').classList.remove('hidden');
+            document.getElementById('logo').classList.remove('hidden');
+            document.getElementById('homeButton').classList.remove('hidden');
             document.getElementById('exitButton').classList.add('hidden');
         });
     </script>
